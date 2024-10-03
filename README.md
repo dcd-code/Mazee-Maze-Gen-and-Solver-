@@ -8,7 +8,7 @@ Libraries that need to be imported using terminal:
 
 Maze is a program that generates and solves mazes.
 
-## You will only be able to connect to my database rarely. This is a project. You can still use this offline and there is no need to login. To do that run afterLogin.py instead of login.py.
+## You will only be able to connect to my database rarely. This is a project. You can still use this offline and there is no need to login. To do that run afterLogin.py instead of login.py. If you run afterLogin.py and use functionalities that require you to login like save maze online, the program will crash. You can still save you maze to your device.
 
 Availible Features:
 - Login page (Login and Sign Up availible)
@@ -17,6 +17,7 @@ Availible Features:
 - Animation speed of maze gen and solving algorithms can be altered
 - Save functionality ( Save to device ){Save online will be implemented in the future}
 - Solve maze from an image { Uses BFS }
+  
 
 Login Page: ![image](https://github.com/user-attachments/assets/8a1e9cca-b519-43e4-b0e5-d787b8c1a22c)
 
