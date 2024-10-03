@@ -1,4 +1,4 @@
-#Maze Generator and solver 
+# Maze Generator and solver 
 ***
 
 Libraries that need to be imported using terminal:
@@ -7,6 +7,8 @@ Libraries that need to be imported using terminal:
 - OpenCV   (pip install opencv-python)
 
 Maze is a program that generates and solves mazes.
+
+## You will only be able to connect to my database rarely. This is a project. You can still use this offline and there is no need to login. To do that run afterLogin.py instead of login.py.
 
 Availible Features:
 - Login page (Login and Sign Up availible)
