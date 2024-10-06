@@ -44,6 +44,7 @@ class AfterSavePage:
 
     def save_maze_to_db(self):
         """Save maze grid data to the database."""
+
         maze_name = input("Enter a name for your maze: ")
         grid_state = self.post_login_page.grid_state
         maze_text = '\n'.join([' '.join(map(str, row)) for row in grid_state])
@@ -59,6 +60,7 @@ class AfterSavePage:
         except mysql.connector.Error as err:
             print(f"Error saving maze to database: {err}")
             self.message = f"Error saving maze to database: {err}"
+
 
     def save_maze_to_file(self):
         filename = input("Enter a filename to save the maze: ") + ".txt"
@@ -90,7 +92,10 @@ class AfterSavePage:
                 elif action == 'save_on_device':
                     self.save_maze_to_file()
                 elif action == 'save_online':
-                    self.save_maze_to_db()
+                    if self.db_conn ==None and self.username == None:
+                        print("You need to be logged in to use this feature.")#
+                    else:
+                        self.save_maze_to_db()
 
             self.draw()
             clock.tick(30)
