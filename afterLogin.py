@@ -22,12 +22,20 @@ from solve_maze_from_image import solve_maze_from_image
 
 class PostLoginPage:
 
-    def __init__(self, screen, font, small_font, db_conn, username):
+    def __init__(self, screen, font, small_font, db_conn=None, username=None):
         self.screen = screen
         self.font = font
         self.small_font = small_font
         self.db_conn = db_conn
         self.username = username
+
+        if db_conn and username:
+            self.db_conn = db_conn
+            self.username = username
+
+        else:
+            self.db_conn = None
+            self.username = None
 
         self.message = ''
         self.current_screen = 'options'
@@ -716,7 +724,10 @@ class PostLoginPage:
         if choice == 'yes':
             self.view_mazes_from_device()
         else:
-            self.view_mazes_from_database()
+            if self.db_conn == None and self.username == None:
+                print("You need to be logged in to use this feature.")
+            else:
+                self.view_mazes_from_database()
 
         root.quit()
 
