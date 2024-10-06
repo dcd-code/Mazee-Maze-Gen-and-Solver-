@@ -35,7 +35,7 @@ class LoginPage:
 
         try:
             self.conn = mysql.connector.connect(
-                host="192.168.0.33",
+                host="ipAddress",
                 port="3306",
                 user="remoteUser",
                 password="yourPassword",
