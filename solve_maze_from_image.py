@@ -215,5 +215,5 @@ def safe_destroy(window):
         pass
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     solve_maze_from_image()
