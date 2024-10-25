@@ -6,14 +6,15 @@ import os
 
 
 class AfterSavePage:
-    def __init__(self, screen, font, small_font, post_login_page, db_conn, username):
+    def __init__(self, screen, font, small_font, post_login_page, db_conn, username, is_guest=False):
         self.screen = screen
         self.font = font
         self.small_font = small_font
         self.post_login_page = post_login_page
         self.message = ''
-        self.db_conn = db_conn  # MySQL database connection
-        self.username = username  # Current user's username
+        self.db_conn = db_conn
+        self.username = username
+        self.is_guest = is_guest
 
         self.back_button = Buttons(self.screen, GREY, 500, 400, 200, 60, text='Back')
         self.save_device_button = Buttons(self.screen, GREY, 500, 200, 200, 60, text='Save on device')
@@ -39,12 +40,14 @@ class AfterSavePage:
             elif self.save_device_button.isOver(pygame.mouse.get_pos()):
                 return 'save_on_device'
             elif self.save_online_button.isOver(pygame.mouse.get_pos()):
+                if self.is_guest:  # Corrected guest check
+                    print("Guest users cannot save maze online.")
+                    self.message = "Guest users cannot save online."
+                    return None
                 return 'save_online'
         return None
 
     def save_maze_to_db(self):
-        """Save maze grid data to the database."""
-
         maze_name = input("Enter a name for your maze: ")
         grid_state = self.post_login_page.grid_state
         maze_text = '\n'.join([' '.join(map(str, row)) for row in grid_state])
