@@ -22,12 +22,13 @@ from solve_maze_from_image import solve_maze_from_image
 
 class PostLoginPage:
 
-    def __init__(self, screen, font, small_font, db_conn=None, username=None):
+    def __init__(self, screen, font, small_font, db_conn=None, username=None, is_guest=False):
         self.screen = screen
         self.font = font
         self.small_font = small_font
         self.db_conn = db_conn
         self.username = username
+        self.is_guest = is_guest
 
         if db_conn and username:
             self.db_conn = db_conn
@@ -613,56 +614,12 @@ class PostLoginPage:
             print("Path found using Bidirectional BFS.")
 
     def transition_to_after_save_page(self):
-        after_save_page = AfterSavePage(self.screen, self.font, self.small_font, self, self.db_conn, self.username)
+        after_save_page = AfterSavePage(self.screen, self.font, self.small_font, self, self.db_conn, self.username,self.is_guest)
         after_save_page.start()
 
     def solve_from_image(self):
         print("solve maze from image")
         solve_maze_from_image()
-
-
-    def load_maze_from_file(self):
-        root = tk.Tk()
-        root.withdraw()
-        root.update()
-
-        file_path = filedialog.askopenfilename(
-            title="Select Maze File",
-            filetypes=(("Text Files", "*.txt"), ("All Files", "*.*"))
-        )
-
-        if file_path:
-            grid = self.read_maze_from_file(file_path)
-            if grid:
-                self.grid_state = grid
-
-                new_rows = len(grid)
-                new_cols = len(grid[0]) if new_rows > 0 else 0
-
-                self.grid = [[None for _ in range(new_cols)] for _ in range(new_rows)]
-
-                node_size = LARGE_NODE_SIZE if new_rows > 21 else NODE_SIZE
-                for y in range(new_rows):
-                    for x in range(new_cols):
-                        self.grid[y][x] = pygame.Rect(
-                            GRID_POS_X + x * node_size,
-                            GRID_POS_Y + y * node_size,
-                            node_size, node_size
-                        )
-
-                self.start_node = None
-                self.end_node = None
-                for y in range(new_rows):
-                    for x in range(new_cols):
-                        node_value = self.grid_state[y][x]
-                        if node_value == 2:
-                            self.start_node = self.grid[y][x]
-                        elif node_value == 3:
-                            self.end_node = self.grid[y][x]
-
-                self.draw_grid()
-
-        root.quit()
 
     def read_maze_from_file(self, filename):
         grid = []
@@ -732,44 +689,48 @@ class PostLoginPage:
         root.quit()
 
     def view_mazes_from_database(self):
-        try:
-            cursor = self.db_conn.cursor()
-            query = "SELECT maze_name, maze_text FROM maze_table WHERE username = %s"
-            cursor.execute(query, (self.username,))
-            mazes = cursor.fetchall()
+        if self.is_guest:
+            print("Guest users have no mazes saved online.")
+            return None
+        else:
+            try:
+                cursor = self.db_conn.cursor()
+                query = "SELECT maze_name, maze_text FROM maze_table WHERE username = %s"
+                cursor.execute(query, (self.username,))
+                mazes = cursor.fetchall()
 
-            if mazes:
-                maze_names = [maze[0] for maze in mazes]
-                root = tk.Tk()
-                root.withdraw()
+                if mazes:
+                    maze_names = [maze[0] for maze in mazes]
+                    root = tk.Tk()
+                    root.withdraw()
 
-                selected_maze_name = simpledialog.askstring(
-                    "Select Maze",
-                    f"Choose a maze to view:\n{', '.join(maze_names)}",
-                )
+                    selected_maze_name = simpledialog.askstring(
+                        "Select Maze",
+                        f"Choose a maze to view:\n{', '.join(maze_names)}",
+                    )
 
-                if selected_maze_name:
-                    selected_maze = next((maze for maze in mazes if maze[0] == selected_maze_name), None)
-                    if selected_maze:
-                        maze_text = selected_maze[1]
-                        grid = [list(map(int, row.split())) for row in maze_text.splitlines()]
+                    if selected_maze_name:
+                        selected_maze = next((maze for maze in mazes if maze[0] == selected_maze_name), None)
+                        if selected_maze:
+                            maze_text = selected_maze[1]
+                            grid = [list(map(int, row.split())) for row in maze_text.splitlines()]
 
 
-                        self.generating_maze = False
-                        self.kruskal_gen = None
-                        self.recursive_backtracker_gen = None
+                            self.generating_maze = False
+                            self.kruskal_gen = None
+                            self.recursive_backtracker_gen = None
 
-                        self.grid_state = grid
-                        self.reinitialize_grid()
-                        self.draw_grid()
-                        self.current_screen = 'create_maze_options' 
+                            self.grid_state = grid
+                            self.reinitialize_grid()
+                            self.draw_grid()
+                            self.current_screen = 'create_maze_options'
 
-                root.quit()
-            else:
-                print("No mazes found in the database.")
+                    root.quit()
+                else:
+                    print("No mazes found in the database.")
 
-        except mysql.connector.Error as err:
-            print(f"Error fetching mazes: {err}")
+            except mysql.connector.Error as err:
+                print(f"Error fetching mazes: {err}")
 
 
     def start(self):
