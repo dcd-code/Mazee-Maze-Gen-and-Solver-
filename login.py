@@ -26,21 +26,24 @@ class LoginPage:
         self.active_input = None
         self.message = ''
         self.current_screen = 'login'
+        self.is_guest = False
+
 
         self.username_box = pygame.Rect(550, 200, 300, 50)
         self.password_box = pygame.Rect(550, 300, 300, 50)
-
         self.login_button = Buttons(screen, GREEN, 450, 400, 200, 60, text='Login')
         self.signup_button = Buttons(screen, RED, 700, 400, 200, 60, text='Sign Up')
+        self.guest_button = Buttons(screen, GREY, 575, 500, 200, 60, text="Guest")
+
 
         try:
             self.conn = mysql.connector.connect(
-                host="ipAddress",
+                host="192.168.0.33",
                 port="3306",
                 user="remoteUser",
                 password="yourPassword",
-                database="mazeandusertables")
-
+                database="mazeandusertables"
+            )
             print("DB connected")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -48,32 +51,30 @@ class LoginPage:
 
     def draw(self):
         screen.fill(WHITE)
-
         if self.current_screen == 'login':
             self.draw_login_screen()
-
         if self.message:
             message_surface = SMALL_FONT.render(self.message, True, BLACK)
             screen.blit(message_surface, (550, 600))
 
     def draw_login_screen(self):
+        # Draw input boxes and labels
         username_label = FONT.render("Username:", True, BLACK)
         password_label = FONT.render("Password:", True, BLACK)
-
         pygame.draw.rect(screen, GREY, self.username_box, 2)
         pygame.draw.rect(screen, GREY, self.password_box, 2)
-
         username_text = FONT.render(self.username, True, BLACK)
         password_text = FONT.render('*' * len(self.password), True, BLACK)
 
         screen.blit(username_label, (400, 210))
         screen.blit(password_label, (400, 310))
-
         screen.blit(username_text, (560, 210))
         screen.blit(password_text, (560, 310))
 
+
         self.login_button.draw_button()
         self.signup_button.draw_button()
+        self.guest_button.draw_button()
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -85,6 +86,8 @@ class LoginPage:
                 self.login()
             elif self.signup_button.isOver(pygame.mouse.get_pos()):
                 self.signUp()
+            elif self.guest_button.isOver(pygame.mouse.get_pos()):
+                self.guest_login()  # Handle guest login
             else:
                 self.active_input = None
 
@@ -105,6 +108,10 @@ class LoginPage:
             self.message = "No database connection."
             return
 
+        if self.is_guest:
+            self.message = "Guest users cannot access database features."
+            return
+
         username = self.username
         password = self.password
 
@@ -118,24 +125,33 @@ class LoginPage:
                 stored_password = result[0]
                 if self.verify_pwd(password, stored_password):
                     print(f"Welcome, {username}!")
-                    print("")
                     self.username = username
                     self.transition_to_post_login()
                 else:
-                    print("Invalid username or password.")
+                    self.message = "Invalid username or password."
             else:
-                print("User does not exist.")
+                self.message = "User does not exist."
 
             cursor.close()
 
         except mysql.connector.Error as err:
             print(f"Database error: {err}")
+            self.message = "Database error occurred."
 
+    def guest_login(self):
+        self.username = "Guest"
+        self.password = "GuestPwd"
+        self.is_guest = True
+        print("Logged in as guest.")
+        self.transition_to_post_login()
 
     def signUp(self):
-
         if not self.conn:
             self.message = "No database connection."
+            return
+
+        if self.is_guest:
+            self.message = "Guest users cannot sign up."
             return
 
         username = self.username
@@ -164,6 +180,7 @@ class LoginPage:
                 self.message = "Username already taken."
             else:
                 print(f"Database error: {err}")
+                self.message = "Database error occurred."
 
     def hashPwd(self, password):
         return hashlib.sha256(password.encode("utf-8")).hexdigest()
@@ -172,11 +189,10 @@ class LoginPage:
         return self.hashPwd(plain_password) == hashed_password
 
     def transition_to_post_login(self):
-        post_login = PostLoginPage(screen, FONT, SMALL_FONT, self.conn,self.username)
+        post_login = PostLoginPage(screen, FONT, SMALL_FONT, self.conn, self.username, self.is_guest)
         post_login.start()
 
     def start(self):
-
         running = True
         clock = pygame.time.Clock()
 
@@ -193,6 +209,5 @@ class LoginPage:
         pygame.quit()
 
 if __name__ == "__main__":
-
     app = LoginPage()
     app.start()
