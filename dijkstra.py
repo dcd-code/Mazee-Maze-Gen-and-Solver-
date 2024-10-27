@@ -1,6 +1,7 @@
 import heapq
 
 stepsList = []
+
 def dijkstra(grid_state, start_pos, end_pos, steps=0):
     rows, cols = len(grid_state), len(grid_state[0])
     distances = [[float('inf') for _ in range(cols)] for _ in range(rows)]
@@ -33,24 +34,27 @@ def dijkstra(grid_state, start_pos, end_pos, steps=0):
                         parent[(neighbor_y, neighbor_x)] = current_pos
                         yield (neighbor_y, neighbor_x), False
 
-    path = []
+    # Check if end_pos is reachable
+    if end_pos not in parent:
+        print("No path found.")
+        return None
 
-    if end_pos in parent:
-        node = end_pos
-        while node != start_pos:
-            steps += 1
-            path.append(node)
-            node = parent[node]
-        path.append(start_pos)
-        path.reverse()
+    # Reconstruct the path from end_pos to start_pos if found
+    path = []
+    node = end_pos
+    while node != start_pos:
+        steps += 1
+        path.append(node)
+        node = parent[node]
+    path.append(start_pos)
+    path.reverse()
 
     for pos in path:
         steps += 1
         yield pos, True
 
-
     stepsList.append(steps)
     print("")
+    print("Path found")
     print(f"Total steps: {steps}")
-    print(f"Steps list: {stepsList}")
     print(f"Average steps that Dijkstra's maze-solving algorithm took: {round(sum(stepsList) / len(stepsList), 2)}")
