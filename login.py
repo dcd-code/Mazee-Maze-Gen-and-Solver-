@@ -38,7 +38,7 @@ class LoginPage:
 
         try:
             self.conn = mysql.connector.connect(
-                host="192.168.0.33",
+                host= address,
                 port="3306",
                 user="remoteUser",
                 password="yourPassword",
@@ -143,6 +143,7 @@ class LoginPage:
         self.password = "GuestPwd"
         self.is_guest = True
         print("Logged in as guest.")
+        print("Since you have logged in as guest, you wont be able to access features like save maze online and view mazes stored online.")
         self.transition_to_post_login()
 
     def signUp(self):
@@ -209,5 +210,9 @@ class LoginPage:
         pygame.quit()
 
 if __name__ == "__main__":
+    address = str(input("Enter the IP address of the host (Leave blank if you don't know): "))
+    if address == "":
+        address = "123456"
     app = LoginPage()
     app.start()
+
