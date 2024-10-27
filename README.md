@@ -1,7 +1,7 @@
 # Maze Generator and solver 
 ***
 
-Libraries that need to be imported using terminal:
+Libraries that need to be imported:
 - Pygame  (pip install pygame)
 - Mysql.connector   (pip install mysql-connector-python)
 - OpenCV   (pip install opencv-python)
@@ -15,18 +15,11 @@ Availible Features:
 - 4 Maze Generating Algorithms (Aldous-Broder, Wilson's, Kruskal's and Recursive Backtracker)
 - 5 Maze Generating Algorithms (Depth-First, Breadth-First, Bidirectional Breadth-First, Greedy Best First Search and Dijkstra's)
 - Animation speed of maze gen and solving algorithms can be altered
-- Save functionality ( Save to device ){Save online will be implemented in the future}
+- Save functionality ( Save to device and online)
 - Solve maze from an image { Uses BFS }
+- Guest accounts can be used if you don't want to create an account.
   
 
-Login Page: ![image](https://github.com/user-attachments/assets/8a1e9cca-b519-43e4-b0e5-d787b8c1a22c)
-
-Main Menu: ![image](https://github.com/user-attachments/assets/6cc0f971-5ae3-4c24-b849-e48b9c8bae11)
-
-Create Maze: ![image](https://github.com/user-attachments/assets/70522d0e-f501-48b5-b13e-55ae0c1ac219)
-
-Recursive Backtracker creating a maze:
-![Untitled video - Made with Clipchamp](https://github.com/user-attachments/assets/c7796f8c-a3d7-4199-a8c5-eeab02334b60)
 
 
 
