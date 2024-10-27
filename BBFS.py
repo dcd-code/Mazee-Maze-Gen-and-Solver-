@@ -52,7 +52,6 @@ def bbfs(grid, start_pos, end_pos):
                     visited_start[(ny, nx)] = current_start
                     yield (ny, nx), False
 
-
         current_end, path_end = queue_end.popleft()
         steps += 1
 
@@ -64,6 +63,7 @@ def bbfs(grid, start_pos, end_pos):
 
             stepsList.append(steps)
             print("")
+            print("Path found")
             print(f"Total steps: {steps}")
             print(f"Average steps (BBFS across runs): {round(sum(stepsList) / len(stepsList), 2)}")
             return
@@ -76,4 +76,6 @@ def bbfs(grid, start_pos, end_pos):
                     visited_end[(ny, nx)] = current_end
                     yield (ny, nx), False
 
-    yield None, True
+    # No path found; return None without yielding to prevent unpacking issues
+    print("No path found.")
+    return None
