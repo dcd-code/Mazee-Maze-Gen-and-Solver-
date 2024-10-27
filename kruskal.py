@@ -60,6 +60,7 @@ class KruskalMazeGenerator:
         stepsList.append(self.steps)
 
         print(f"Average steps for Kruskals maze generation algorithm: {round(sum(stepsList) / len(stepsList),2)}")
+        print("Maze generated using Kruskal's algorithm.")
 
 
 
