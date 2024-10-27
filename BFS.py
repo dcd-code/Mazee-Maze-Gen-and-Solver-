@@ -9,7 +9,6 @@ def bfs(grid, start_pos, end_pos):
     end_y, end_x = end_pos
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-
     queue = deque([(start_pos, [])])
     visited = set()
     visited.add(start_pos)
@@ -26,6 +25,7 @@ def bfs(grid, start_pos, end_pos):
 
             stepsList.append(steps)
             print("")
+            print("Path found")
             print(f"Total steps: {steps}")
             print(f"Average steps (BFS across runs): {round(sum(stepsList) / len(stepsList), 2)}")
             return
@@ -39,4 +39,6 @@ def bfs(grid, start_pos, end_pos):
                     visited.add((ny, nx))
                     yield (ny, nx), False
 
-    return []
+    # If we exit the loop without finding the end
+    print("No path found.")
+    return None
