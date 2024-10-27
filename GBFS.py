@@ -2,10 +2,8 @@ import heapq
 
 stepsList = []
 
-
 def h(p1, p2):
     return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
-
 
 def gbfs(grid_state, start, end):
     steps = 0
@@ -32,6 +30,7 @@ def gbfs(grid_state, start, end):
 
             stepsList.append(steps)
             print("")
+            print("Path found")
             print(f"Total steps: {steps}")
             print(f"Average steps (GBFS across runs): {round(sum(stepsList) / len(stepsList), 2)}")
             return
@@ -49,3 +48,7 @@ def gbfs(grid_state, start, end):
                 heapq.heappush(open_list, (h(neighbor, end), neighbor))
                 came_from[neighbor] = current
                 yield neighbor, False
+
+    # If we exit the loop without finding the end
+    print("No path found.")
+    return None
