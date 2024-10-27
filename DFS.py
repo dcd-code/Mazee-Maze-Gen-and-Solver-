@@ -1,6 +1,5 @@
 stepsList = []
 
-
 def dfs(grid, start, end):
     stack = [(start, [start])]
     visited = set()
@@ -20,8 +19,8 @@ def dfs(grid, start, end):
             yield from ((node, path, True) for node in path)
             stepsList.append(steps)
             print("")
+            print("Path found")
             print(f"Total steps taken: {steps}")
-            print(stepsList)
             print(f"Average steps (DFS across runs): {round(sum(stepsList) / len(stepsList), 2)}")
             return
 
@@ -29,6 +28,9 @@ def dfs(grid, start, end):
             if neighbor not in visited:
                 stack.append((neighbor, path + [neighbor]))
 
+    # If we exit the while loop without finding the end
+    print("No path found.")
+    return None
 
 def get_neighbors(grid, y, x):
     neighbors = []
