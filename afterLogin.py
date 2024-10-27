@@ -470,11 +470,7 @@ class PostLoginPage:
             pygame.display.update()
             pygame.time.delay(self.animation_speed)
 
-        if not path_found:
-            print("No path found using DFS.")
 
-        else:
-            print("Path found using DFS.")
 
     def clear_previous_path(self):
         for y in range(len(self.grid_state)):
@@ -510,11 +506,7 @@ class PostLoginPage:
             pygame.display.update()
             pygame.time.delay(self.animation_speed)
 
-        if not path_found:
-            print("No path found using BFS.")
 
-        else:
-            print("Path found using BFS.")
 
     def solve_with_dijkstra(self):
         self.clear_previous_path()
@@ -543,7 +535,7 @@ class PostLoginPage:
             pygame.display.update()
             pygame.time.delay(self.animation_speed)
 
-        print("Path search with Dijkstra completed.")
+
 
     def solve_with_gbfs(self):
         self.clear_previous_path()
@@ -573,11 +565,7 @@ class PostLoginPage:
             pygame.display.update()
             pygame.time.delay(self.animation_speed)
 
-        if not path_found:
-            print("No path found using GBFS.")
 
-        else:
-            print("Path found using GBFS.")
 
     def solve_with_bbfs(self):
         self.clear_previous_path()
@@ -607,11 +595,7 @@ class PostLoginPage:
             pygame.display.update()
             pygame.time.delay(self.animation_speed)
 
-        if not path_found:
-            print("No path found using Bidirectional BFS.")
 
-        else:
-            print("Path found using Bidirectional BFS.")
 
     def transition_to_after_save_page(self):
         after_save_page = AfterSavePage(self.screen, self.font, self.small_font, self, self.db_conn, self.username,self.is_guest)
@@ -628,10 +612,8 @@ class PostLoginPage:
                 for line in f:
                     row = list(map(int, line.split()))
                     grid.append(row)
-        except FileNotFoundError:
-            print(f"{filename} not found")
-        except IOError as e:
-            print("Error!!!")
+        except:
+            print("Error!!! Choose a different file.")
         return grid
 
     def reinitialize_grid(self):
@@ -665,6 +647,9 @@ class PostLoginPage:
                 self.reinitialize_grid()
                 self.draw_grid()
                 self.current_screen = 'create_maze_options'
+        else:
+            print("Not a supported maze file. Choose another file.")
+            pass
 
         root.quit()
 
